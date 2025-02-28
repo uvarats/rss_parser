@@ -6,6 +6,10 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use App\Factory\TelegramApiFactory;
+use App\Feature\Reader\Factory\ReaderChainConfiguratorFactory;
+use App\Feature\Reader\Interface\ReaderConfiguratorInterface;
+use App\Feature\Reader\Service\HttpClientReaderConfigurator;
+use App\Feature\Reader\ValueObject\ReaderConfigurator;
 use App\ValueObjects\TelegramConfig;
 use Vjik\TelegramBot\Api\TelegramBotApi;
 
@@ -33,4 +37,10 @@ return function(ContainerConfigurator $container): void {
 
     $services->set(TelegramBotApi::class)
         ->factory([service(TelegramApiFactory::class), 'make']);
+
+    $services->set(HttpClientReaderConfigurator::class)
+        ->tag(ReaderConfigurator::TAG, ['priority' => 999]);
+
+    $services->set(ReaderConfiguratorInterface::class)
+        ->factory([service(ReaderChainConfiguratorFactory::class), 'make']);
 };

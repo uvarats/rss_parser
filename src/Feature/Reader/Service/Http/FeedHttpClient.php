@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Http;
+namespace App\Feature\Reader\Service\Http;
 
 use Laminas\Feed\Reader\Http\ClientInterface as FeedClientInterface;
 use Laminas\Feed\Reader\Http\Psr7ResponseDecorator;
