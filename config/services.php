@@ -6,11 +6,14 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use App\Factory\TelegramApiFactory;
+use App\Feature\Feed\Interface\FeedResolverInterface;
+use App\Feature\Feed\Service\FeedResolver;
 use App\Feature\Reader\Factory\ReaderChainConfiguratorFactory;
 use App\Feature\Reader\Interface\ReaderConfiguratorInterface;
 use App\Feature\Reader\Service\HttpClientReaderConfigurator;
 use App\Feature\Reader\ValueObject\ReaderConfigurator;
 use App\ValueObjects\TelegramConfig;
+use Symfony\Component\Uid\Command as UidCommands;
 use Vjik\TelegramBot\Api\TelegramBotApi;
 
 return function(ContainerConfigurator $container): void {
@@ -43,4 +46,13 @@ return function(ContainerConfigurator $container): void {
 
     $services->set(ReaderConfiguratorInterface::class)
         ->factory([service(ReaderChainConfiguratorFactory::class), 'make']);
+
+    $services
+        ->set(UidCommands\GenerateUlidCommand::class)
+        ->set(UidCommands\GenerateUuidCommand::class)
+        ->set(UidCommands\InspectUlidCommand::class)
+        ->set(UidCommands\InspectUuidCommand::class);
+
+    $services->set(FeedResolver::class);
+    $services->alias(FeedResolverInterface::class, FeedResolver::class);
 };

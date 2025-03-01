@@ -5,7 +5,7 @@ namespace App\Command;
 use App\Feature\Reader\Interface\ReaderConfiguratorInterface;
 use App\Feature\Reader\Service\Http\FeedHttpClient;
 use App\Service\Adapters\OnetFeed;
-use App\Service\TelegramSender;
+use App\Service\NotifierSender;
 use App\ValueObjects\TelegramConfig;
 use Laminas\Feed\Reader\Reader;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -26,7 +26,7 @@ class RunCommand extends Command
     public function __construct(
         private readonly FeedHttpClient $client,
         private readonly TelegramConfig $telegramConfig,
-        private readonly TelegramSender $sender,
+        private readonly NotifierSender $notifierSender,
         private readonly OnetFeed $onetFeed,
         private readonly ReaderConfiguratorInterface $readerConfigurator,
     )
@@ -55,11 +55,11 @@ class RunCommand extends Command
 
         Reader::setHttpClient($this->client);
 
-        $posts = $this->onetFeed->getPostsAfter(new \DateTimeImmutable('2025-02-28 13:00:00'));
-        dd($posts);
+        $posts = $this->onetFeed->getPostsAfter(new \DateTimeImmutable('2025-03-01'));
 
         foreach ($posts as $post) {
-            $this->sender->send($chatId, $post);
+            $this->notifierSender->send($chatId, $post);
+            usleep(100);
         }
 
         return Command::SUCCESS;
