@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Interface\TextResolverInterface;
 use App\ValueObjects\PostData;
 use Symfony\Component\Notifier\Bridge\Telegram\TelegramOptions;
 use Symfony\Component\Notifier\ChatterInterface;
@@ -11,10 +12,9 @@ use Symfony\Component\Notifier\Message\ChatMessage;
 
 class NotifierSender
 {
-    private const string MORE_DETAILS_TEXT = 'Więcej szczegółów';
-
     public function __construct(
         private readonly ChatterInterface $chatter,
+        private readonly TextResolverInterface $textResolver,
     ) {}
 
     public function send(int $chatId, PostData $postData): void
@@ -23,7 +23,7 @@ class NotifierSender
             "*%s*\n\n%s\n\n*[%s](%s)*",
             $postData->getTitle(),
             $postData->getDescription(),
-            self::MORE_DETAILS_TEXT,
+            $this->textResolver->getMoreDetailsText(),
             $postData->getLink(),
         );
 

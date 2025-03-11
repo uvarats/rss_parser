@@ -12,6 +12,8 @@ use App\Feature\Reader\Factory\ReaderChainConfiguratorFactory;
 use App\Feature\Reader\Interface\ReaderConfiguratorInterface;
 use App\Feature\Reader\Service\HttpClientReaderConfigurator;
 use App\Feature\Reader\ValueObject\ReaderConfigurator;
+use App\Interface\TextResolverInterface;
+use App\Service\PolishMoreDetailsTextResolver;
 use App\ValueObjects\TelegramConfig;
 use Symfony\Component\Uid\Command as UidCommands;
 use Vjik\TelegramBot\Api\TelegramBotApi;
@@ -55,4 +57,7 @@ return function(ContainerConfigurator $container): void {
 
     $services->set(FeedResolver::class);
     $services->alias(FeedResolverInterface::class, FeedResolver::class);
+
+    $services->set(PolishMoreDetailsTextResolver::class);
+    $services->alias(TextResolverInterface::class, PolishMoreDetailsTextResolver::class);
 };

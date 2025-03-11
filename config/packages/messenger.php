@@ -15,15 +15,27 @@ return static function (FrameworkConfig $framework) {
 
     $messenger->failureTransport('failed');
 
-    $asyncTransport = $messenger->transport('async');
-    $asyncTransport
+    $asyncTransport = $messenger->transport('async')
         ->dsn(env('MESSENGER_TRANSPORT_DSN'))
         ->options([
             'use_notify' => true,
             'check_delayed_interval' => 60000,
-        ]);
+        ])
+        ->retryStrategy()
+        ->maxRetries(3)
+        ->multiplier(2);
 
-    $asyncTransport->retryStrategy()->maxRetries(3)->multiplier(2);
+    // this transport is specially for sending posts to telegram with custom retry strategy when rate limit was reached
+    $postTransport = $messenger->transport('posts')
+        ->dsn(env('MESSENGER_TRANSPORT_DSN'))
+        ->options([
+            'use_notify' => true,
+            'check_delayed_interval' => 60000,
+        ])
+        ->retryStrategy()
+        ->delay(60000)
+        ->multiplier(1)
+        ->maxRetries(3);
 
     $messenger
         ->transport('failed')
@@ -38,4 +50,5 @@ return static function (FrameworkConfig $framework) {
     $messenger->routing(ChatMessage::class)->senders(['async']);
     $messenger->routing(SmsMessage::class)->senders(['async']);
     $messenger->routing(AppMessages\CreateFeedMessage::class)->senders(['async']);
+    $messenger->routing(AppMessages\SendPostMessage::class)->senders(['posts']);
 };

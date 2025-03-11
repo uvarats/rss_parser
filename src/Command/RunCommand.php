@@ -53,8 +53,7 @@ class RunCommand extends Command
 
         //$bot->sendMessage($chatId, 'kurwa bober');
 
-        Reader::setHttpClient($this->client);
-
+        $lastCheckedAt = null;
         $posts = $this->onetFeed->getPostsAfter(new \DateTimeImmutable('2025-03-01'));
 
         foreach ($posts as $post) {

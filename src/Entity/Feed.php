@@ -27,9 +27,6 @@ class Feed
     #[ORM\Column(options: ['default' => true])]
     private bool $active = true;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $lastReadAt = null;
-
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -105,18 +102,6 @@ class Feed
     public function setActive(bool $active): static
     {
         $this->active = $active;
-
-        return $this;
-    }
-
-    public function getLastReadAt(): ?\DateTimeImmutable
-    {
-        return $this->lastReadAt;
-    }
-
-    public function setLastReadAt(?\DateTimeImmutable $lastReadAt): static
-    {
-        $this->lastReadAt = $lastReadAt;
 
         return $this;
     }
