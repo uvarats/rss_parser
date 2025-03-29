@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\FeedChatRepository;
+use App\Feature\Feed\Repository\FeedChatRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity(repositoryClass: FeedChatRepository::class)]
+#[ORM\UniqueConstraint(name: 'feed_chat_unique', fields: ['chatId', 'feed'])]
 class FeedChat
 {
     #[ORM\Id]
