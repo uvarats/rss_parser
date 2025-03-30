@@ -20,14 +20,16 @@ class FeedChatRepository extends ServiceEntityRepository
     /**
      * @return FeedChat[]
      */
-    public function findByFeedId(FeedId $feedId): array
+    public function findActiveByFeedId(FeedId $feedId): array
     {
         $qb = $this->createQueryBuilder('fc');
 
         return $qb->select('fc', 'feed')
             ->join('fc.feed', 'feed')
             ->where($qb->expr()->eq('feed.id', ':feedId'))
+            ->andWhere($qb->expr()->eq('fc.active', ':active'))
             ->setParameter('feedId', $feedId->toInt())
+            ->setParameter('active', true)
             ->getQuery()
             ->getResult();
     }

@@ -21,17 +21,20 @@ class NotifierSender
     {
         $text = sprintf(
             "*%s*\n\n%s\n\n*[%s](%s)*",
-            $postData->getTitle(),
-            $postData->getDescription(),
+            $postData->title,
+            $postData->description,
             $this->textResolver->getMoreDetailsText(),
-            $postData->getLink(),
+            $postData->link,
         );
 
         $message = new ChatMessage($text);
 
         $options = new TelegramOptions()
-            ->chatId((string)$chatId)
-            ->photo($postData->getEnclosureLink());
+            ->chatId((string)$chatId);
+
+        if ($postData->enclosureLink !== null) {
+            $options = $options->photo($postData->enclosureLink);
+        }
 
         $message->options($options);
 

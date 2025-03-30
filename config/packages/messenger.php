@@ -80,4 +80,5 @@ return static function (FrameworkConfig $framework) {
     $messenger->routing(AppMessages\CreateFeedMessage::class)->senders(['async']);
     $messenger->routing(AppMessages\SendPostMessage::class)->senders(['posts']);
     $messenger->routing(AppMessages\AddFeedChatMessage::class)->senders(['async']);
+    $messenger->routing(AppMessages\CheckFeedCommand::class)->senders(['async']);
 };

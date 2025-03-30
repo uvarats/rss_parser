@@ -27,16 +27,20 @@ class Feed
     #[ORM\Column(options: ['default' => true])]
     private bool $active = true;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $lastCheckAt = null;
+
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private \DateTimeImmutable $createdAt;
 
     #[ORM\Column]
     #[Gedmo\Timestampable]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private \DateTimeImmutable $updatedAt;
 
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     public static function make(
@@ -106,7 +110,24 @@ class Feed
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getLastCheckAt(): ?\DateTimeImmutable
+    {
+        return $this->lastCheckAt;
+    }
+
+    public function touchLastCheck(): void
+    {
+        $this->lastCheckAt = new \DateTimeImmutable();
+    }
+
+    public function setLastCheckAt(?\DateTimeImmutable $lastCheckAt): static
+    {
+        $this->lastCheckAt = $lastCheckAt;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }
@@ -118,7 +139,7 @@ class Feed
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): \DateTimeImmutable
     {
         return $this->updatedAt;
     }

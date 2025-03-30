@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\ValueObjects;
 
-use App\Feature\Feed\ValueObject\FeedId;
-
 final readonly class PostData
 {
     public function __construct(
@@ -16,7 +14,6 @@ final readonly class PostData
         public \DateTimeImmutable $updatedAt,
         public ?string $enclosureLink,
         public string $description,
-        public ?FeedId $sourceFeedId = null,
     ) {}
 
     /**
@@ -62,7 +59,7 @@ final readonly class PostData
     /**
      * @deprecated
      */
-    public function getEnclosureLink(): string
+    public function getEnclosureLink(): ?string
     {
         return $this->enclosureLink;
     }

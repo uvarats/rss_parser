@@ -2,25 +2,22 @@
 
 namespace App\Command;
 
-use App\Feature\Reader\Interface\ReaderConfiguratorInterface;
 use App\Message\CheckFeedCommand;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsCommand(
-    name: 'app:run',
-    description: 'Add a short description for your command',
+    name: 'feed:check',
+    description: 'Manually checks the feed',
 )]
-class RunCommand extends Command
+class FeedCheckCommand extends Command
 {
     public function __construct(
-        private readonly ReaderConfiguratorInterface $readerConfigurator,
         private readonly MessageBusInterface $bus,
     )
     {
@@ -30,18 +27,34 @@ class RunCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
+            ->addArgument('id', null, InputArgument::REQUIRED)
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $this->readerConfigurator->configure();
+        $feedId = $input->getArgument('id');
 
-        $envelope = $this->bus->dispatch(new CheckFeedCommand(feedId: 2));
-        dd($envelope);
+        if (empty($feedId)) {
+            $io->error('Please, provide feed id as an argument');
+
+            return Command::FAILURE;
+        }
+
+        if (!is_numeric($feedId)) {
+            $io->error('Please, provide valid int feed id');
+
+            return Command::FAILURE;
+        }
+
+        $feedId = (int)$feedId;
+
+        if ($feedId <= 0) {
+            $io->error('You are pretty idiot. Do you know, that id must be positive? How did you do this, kurwa?');
+        }
+
+        $this->bus->dispatch(new CheckFeedCommand(feedId: $feedId));
 
         return Command::SUCCESS;
     }

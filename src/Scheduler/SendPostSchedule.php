@@ -2,8 +2,6 @@
 
 namespace App\Scheduler;
 
-use App\Message\CheckOnetMessage;
-use App\Message\SendPostMessage;
 use Symfony\Component\Scheduler\Attribute\AsSchedule;
 use Symfony\Component\Scheduler\RecurringMessage;
 use Symfony\Component\Scheduler\Schedule;

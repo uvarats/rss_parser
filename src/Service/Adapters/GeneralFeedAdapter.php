@@ -14,14 +14,14 @@ class GeneralFeedAdapter
 {
     public function getPostsAfter(string $feedUrl, \DateTimeImmutable $date): PostCollection
     {
-        return $this->getFeed()
+        return $this->getFeed($feedUrl)
             ->afterDate($date)
             ->orderByCreationDate();
     }
 
-    private function getFeed(): PostCollection
+    private function getFeed(string $feedUrl): PostCollection
     {
-        $channel = Reader::import('https://wiadomosci.onet.pl/.feed');
+        $channel = Reader::import($feedUrl);
 
         $posts = new PostCollection();
 
@@ -45,7 +45,7 @@ class GeneralFeedAdapter
                 link: $item->getPermalink(),
                 createdAt: \DateTimeImmutable::createFromMutable($item->getDateCreated()),
                 updatedAt: \DateTimeImmutable::createFromMutable($item->getDateModified()),
-                enclosureLink: Uri::new($enclosure)->withScheme('https')->toString(),
+                enclosureLink: $enclosure === null ? null : Uri::new($enclosure)->withScheme('https')->toString(),
                 description: $description,
             );
         }

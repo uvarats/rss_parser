@@ -35,7 +35,6 @@ final readonly class AddFeedChatMessageHandler
         $feedChat = FeedChat::make(
             chatId: $message->externalChatId,
             feed: $feed,
-            refreshInterval: $message->refreshInterval,
         );
 
         $this->entityManager->persist($feedChat);

@@ -17,17 +17,14 @@ class FeedChat
     private ?int $id = null;
 
     #[ORM\Column(type: Types::BIGINT)]
-    private ?string $chatId = null;
+    private string $chatId;
+
+    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => true])]
+    private bool $active = true;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Feed $feed = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $refreshInterval = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $lastCheckAt = null;
 
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
@@ -45,13 +42,11 @@ class FeedChat
     public static function make(
         int $chatId,
         Feed $feed,
-        ?int $refreshInterval,
     ): FeedChat {
         $instance = new self();
 
         $instance->chatId = $chatId;
         $instance->feed = $feed;
-        $instance->refreshInterval = $refreshInterval;
 
         return $instance;
     }
@@ -61,7 +56,7 @@ class FeedChat
         return $this->id;
     }
 
-    public function getChatId(): ?string
+    public function getChatId(): string
     {
         return $this->chatId;
     }
@@ -78,33 +73,19 @@ class FeedChat
         return $this->feed;
     }
 
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): void
+    {
+        $this->active = $active;
+    }
+
     public function setFeed(?Feed $feed): static
     {
         $this->feed = $feed;
-
-        return $this;
-    }
-
-    public function getRefreshInterval(): ?int
-    {
-        return $this->refreshInterval;
-    }
-
-    public function setRefreshInterval(?int $refreshInterval): static
-    {
-        $this->refreshInterval = $refreshInterval;
-
-        return $this;
-    }
-
-    public function getLastCheckAt(): ?\DateTimeImmutable
-    {
-        return $this->lastCheckAt;
-    }
-
-    public function setLastCheckAt(?\DateTimeImmutable $lastCheckAt): static
-    {
-        $this->lastCheckAt = $lastCheckAt;
 
         return $this;
     }
